@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>St. Gregory's · Result Maker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: #eef2f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: calc(env(safe-area-inset-top) + 14px) calc(env(safe-area-inset-right) + 10px) calc(env(safe-area-inset-bottom) + 14px) calc(env(safe-area-inset-left) + 10px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+      overscroll-behavior-y: contain;
+    }
+
+    .form-card {
+      max-width: 500px;
+      width: 100%;
+      height: fit-content;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 14px 18px;
+      box-shadow: 0 6px 18px rgba(0, 20, 30, 0.08);
+      overflow: visible;
+    }
+
+    .school-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      border-bottom: 3px solid #0b3b5c;
+      margin-top: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .school-header h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0b3b5c;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .school-header .badge-header {
+      font-weight: 500;
+      color: #1f4b66;
+      background: #e2eaf2;
+      padding: 4px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .selector-wrapper {
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    .selector-wrapper label {
+      font-weight: 600;
+      color: #1a4057;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+    }
+
+    .selector-wrapper select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid #cbdae8;
+      border-radius: 12px;
+      font-size: 1rem;
+      background: white;
+      color: #0b2a3d;
+      font-weight: 500;
+      appearance: auto;
+      -webkit-appearance: none;
+      touch-action: manipulation;
+      min-height: 50px;
+    }
+
+    .selector-wrapper select:focus {
+      outline: 2px solid #2b7aa2;
+      border-color: transparent;
+    }
+
+    .ct-config {
+      background: #f4f8fc;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .ct-config label {
+      font-weight: 500;
+      color: #1a4057;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .ct-config select {
+      padding: 8px 12px;
+      border: 2px solid #cbdae8;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: white;
+      color: #0b2a3d;
+      font-weight: 500;
+      -webkit-appearance: none;
+      touch-action: manipulation;
+      min-width: 76px;
+      min-height: 42px;
+      flex-shrink: 0;
+    }
+
+    .ct-config select:focus {
+      outline: 2px solid #2b7aa2;
+      border-color: transparent;
+    }
+
+    .ct-config .ct-hint {
+      font-size: 0.7rem;
+      color: #4a6b84;
+      opacity: 0.8;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    #subjectContainer {
+      width: 100%;
+      overflow: visible;
+    }
+
+    .subject-block {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 16px 12px 18px;
+      border: 1px solid #dfe8f0;
+      margin-top: 2px;
+      display: none;
+      width: 100%;
+      overflow: visible;
+    }
+
+    .subject-block.active {
+      display: block;
+    }
+
+    .subject-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: #1a4057;
+      letter-spacing: -0.2px;
+      flex-wrap: wrap;
+    }
+
+    .subject-title .tag {
+      background: #d4e0ec;
+      padding: 2px 12px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #1f4b66;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .input-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 4px 8px;
+      flex-wrap: wrap;
+      flex: 1 1 auto;
+      min-width: 120px;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #2f4b61;
+      min-width: 48px;
+      flex-shrink: 0;
+    }
+
+    .input-group input {
+      width: 80px;
+      padding: 10px 6px;
+      border: 1px solid #cbdae8;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+      transition: 0.15s;
+      text-align: center;
+      font-weight: 500;
+      color: #0b2a3d;
+      -moz-appearance: textfield;
+      appearance: textfield;
+      min-height: 44px;
+      flex: 0 1 auto;
+      min-width: 60px;
+    }
+
+    .input-group input::-webkit-outer-spin-button,
+    .input-group input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .input-group input:focus {
+      outline: 2px solid #2b7aa2;
+      border-color: transparent;
+      background: #f6faff;
+    }
+
+    .input-group input.small-input {
+      width: 72px;
+    }
+
+    .input-group input.placeholder-gray::placeholder {
+      color: #b0c4d8;
+      font-weight: 400;
+    }
+
+    .ct-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-bottom: 8px;
+      width: 100%;
+    }
+
+    .ct-inputs .input-group {
+      flex: 0 1 auto;
+      min-width: 100px;
+    }
+
+    .result-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 14px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      table-layout: fixed;
+    }
+
+    .result-table th {
+      background: #0b3b5c;
+      color: white;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 12px 8px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .result-table td {
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 0.95rem;
+      background: white;
+      border-bottom: 1px solid #e8edf2;
+      word-break: break-word;
+    }
+
+    .result-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .result-table .section-label {
+      font-weight: 600;
+      color: #1a4057;
+      text-align: left;
+      padding-left: 14px;
+      background: #f4f8fc;
+      width: 30%;
+    }
+
+    .result-table .score-cell {
+      font-weight: 600;
+      color: #0b2a3d;
+      width: 20%;
+    }
+
+    .result-table .status-cell {
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      min-width: 60px;
+      text-align: center;
+      width: auto;
+    }
+
+    .status-pass {
+      background: #deefe4;
+      color: #0a5530;
+    }
+
+    .status-fail {
+      background: #ffe6e6;
+      color: #b00020;
+      border: 1px solid #ffb3b3;
+    }
+
+    .status-pending {
+      background: #eaf0f6;
+      color: #7a94aa;
+      border: 1px dashed #cbdae8;
+    }
+
+    .result-table .total-row td {
+      background: #0b3b5c;
+      color: white;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 8px;
+    }
+
+    .result-table .total-row .score-cell {
+      color: #ffffff;
+      font-size: 1.2rem;
+    }
+
+    .result-table .total-row .status-cell {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+    }
+
+    .hint {
+      font-size: 0.7rem;
+      color: #4a6b84;
+      margin-top: 6px;
+      opacity: 0.8;
+      padding-left: 4px;
+      width: 100%;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      background: #eaf0f6;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      color: #1d425b;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .footer-note .legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .footer-note .legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot-green {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #0a5530;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .dot-red {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #b00020;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .dot-gray {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background: #cbdae8;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    input, select {
+      touch-action: manipulation;
+      font-family: inherit;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      body {
+        padding-top: calc(env(safe-area-inset-top) + 10px);
+        padding-bottom: calc(env(safe-area-inset-bottom) + 10px);
+      }
+
+      .form-card {
+        padding: 14px 10px 16px;
+        border-radius: 14px;
+      }
+
+      .subject-block {
+        padding: 12px 10px;
+        border-radius: 12px;
+      }
+      
+      .input-group {
+        flex: 1 1 100%;
+        min-width: 100%;
+      }
+      
+      .input-group label {
+        min-width: 50px;
+        font-size: 0.8rem;
+      }
+      
+      .input-group input {
+        width: 68px;
+        min-height: 40px;
+        font-size: 0.9rem;
+      }
+      
+      .ct-inputs .input-group {
+        flex: 1 1 45%;
+        min-width: 80px;
+      }
+      
+      .school-header h1 {
+        font-size: 1.3rem;
+      }
+      
+      .school-header .badge-header {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+      }
+      
+      .result-table th,
+      .result-table td {
+        padding: 10px 4px;
+        font-size: 0.8rem;
+      }
+      
+      .result-table .section-label {
+        padding-left: 6px;
+        font-size: 0.75rem;
+      }
+      
+      .result-table .score-cell {
+        font-size: 0.85rem;
+      }
+      
+      .result-table .status-cell {
+        padding: 4px 8px;
+        min-width: 50px;
+        font-size: 0.75rem;
+      }
+      
+      .result-table .total-row td {
+        font-size: 0.9rem;
+        padding: 10px 4px;
+      }
+      
+      .result-table .total-row .score-cell {
+        font-size: 1rem;
+      }
+      
+      .ct-config {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 12px;
+      }
+      
+      .ct-config .ct-hint {
+        margin-left: 0;
+      }
+      
+      .ct-config select {
+        width: 100%;
+      }
+      
+      .footer-note {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 12px 14px;
+      }
+      
+      .footer-note .legend {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .input-group input {
+        width: 56px;
+        min-height: 36px;
+        font-size: 0.85rem;
+      }
+      
+      .ct-inputs .input-group {
+        flex: 1 1 100%;
+      }
+      
+      .result-table th,
+      .result-table td {
+        padding: 8px 3px;
+        font-size: 0.7rem;
+      }
+      
+      .result-table .section-label {
+        font-size: 0.7rem;
+        padding-left: 4px;
+      }
+      
+      .result-table .status-cell {
+        padding: 3px 6px;
+        min-width: 40px;
+        font-size: 0.65rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="form-card">
+  <div class="school-header">
+    <h1>SGHSC</h1>
+    <span class="badge-header">Result Maker For Class 6,7,8 Only</span>
+  </div>
+
+  <div class="selector-wrapper">
+    <label for="subjectSelect">Select Subject</label>
+    <select id="subjectSelect">
+      <option value="bangla1">Bangla 1st Paper</option>
+      <option value="bangla2">Bangla 2nd Paper</option>
+      <option value="eng1">English 1st Paper</option>
+      <option value="eng2">English 2nd Paper</option>
+      <option value="math">Mathematics</option>
+      <option value="science">Science</option>
+      <option value="bgs">Bangladesh & Global Studies</option>
+      <option value="rms">Religion & Moral Studies</option>
+      <option value="ict">ICT</option>
+      <option value="arts">Art & Crafts</option>
+    </select>
+  </div>
+
+  <div class="ct-config">
+    <label for="ctCountSelect">Number of CT exams:</label>
+    <select id="ctCountSelect">
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <span class="ct-hint">each CT max 15</span>
+  </div>
+
+  <div id="subjectContainer"></div>
+
+  <div class="footer-note">
+    <div class="legend">
+      <span><span class="dot-green"></span> Pass (≥40%)</span>
+      <span><span class="dot-red"></span> Fail (<40%)</span>
+      <span><span class="dot-gray"></span> Pending</span>
+    </div>
+    <span style="opacity:0.7;">tap numbers to edit</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----- configuration -----
+    const subjectConfigs = {
+      bangla1: {
+        label: 'Bangla 1st Paper',
+        type: 'standard',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        mcq: { max: 30, pass: 12 },
+        cq: { rawMax: 70, convertedMax: 50, pass: 20 },
+        totalMax: 100
+      },
+      math: {
+        label: 'Mathematics',
+        type: 'standard',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        mcq: { max: 30, pass: 12 },
+        cq: { rawMax: 70, convertedMax: 50, pass: 20 },
+        totalMax: 100
+      },
+      science: {
+        label: 'Science',
+        type: 'standard',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        mcq: { max: 30, pass: 12 },
+        cq: { rawMax: 70, convertedMax: 50, pass: 20 },
+        totalMax: 100
+      },
+      bgs: {
+        label: 'Bangladesh & Global Studies',
+        type: 'standard',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        mcq: { max: 30, pass: 12 },
+        cq: { rawMax: 70, convertedMax: 50, pass: 20 },
+        totalMax: 100
+      },
+      rms: {
+        label: 'Religion & Moral Studies',
+        type: 'standard',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        mcq: { max: 30, pass: 12 },
+        cq: { rawMax: 70, convertedMax: 50, pass: 20 },
+        totalMax: 100
+      },
+      eng1: {
+        label: 'English 1st Paper',
+        type: 'eng1',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 20, pass: 8 },
+        cq: { rawMax: 100, convertedMax: 80, pass: 32 },
+        totalMax: 100
+      },
+      eng2: {
+        label: 'English 2nd Paper',
+        type: 'eng2_arts',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 15, pass: 6 },
+        cq: { rawMax: 50, convertedMax: 35, pass: 14 },
+        totalMax: 50
+      },
+      arts: {
+        label: 'Art & Crafts',
+        type: 'eng2_arts',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 15, pass: 6 },
+        cq: { rawMax: 50, convertedMax: 35, pass: 14 },
+        totalMax: 50
+      },
+      bangla2: {
+        label: 'Bangla 2nd Paper',
+        type: 'bangla2',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 15, pass: 6 },
+        mcq: { max: 15, pass: 6 },
+        cq: { rawMax: 50, convertedMax: 20, pass: 8 },
+        totalMax: 50
+      },
+      ict: {
+        label: 'ICT',
+        type: 'ict',
+        ca: { ctCount: 2, ctMax: 15, sbaMax: 10, caMax: 15, pass: 6 },
+        mcq: { rawMax: 15, convertedMax: 10, pass: 4 },
+        cq: { rawMax: 25, convertedMax: 15, pass: 6 },
+        prac: { max: 10, pass: 4 },
+        totalMax: 50
+      }
+    };
+
+    // ----- helper functions -----
+    function clamp(v, min, max) {
+      return Math.min(max, Math.max(min, v));
+    }
+
+    function round2(v) {
+      return Math.round(v * 100) / 100;
+    }
+
+    function makeStatusEl(isPass, isPending = false) {
+      const span = document.createElement('span');
+      if (isPending) {
+        span.className = 'status-cell status-pending';
+        span.textContent = 'Pending';
+      } else {
+        span.className = 'status-cell ' + (isPass ? 'status-pass' : 'status-fail');
+        span.textContent = isPass ? 'Pass' : 'Fail';
+      }
+      return span;
+    }
+
+    function checkPending(...values) {
+      return values.some(v => v === null || v === undefined || isNaN(v) || v === '');
+    }
+
+    // ----- build subject blocks -----
+    const container = document.getElementById('subjectContainer');
+    const subjectSelect = document.getElementById('subjectSelect');
+    const ctCountSelect = document.getElementById('ctCountSelect');
+
+    const blocks = {};
+    const updateFunctions = {};
+
+    function getCTInputs(key, count) {
+      const container = document.getElementById('ct_container_' + key);
+      if (!container) return [];
+      const inputs = container.querySelectorAll('input');
+      return Array.from(inputs);
+    }
+
+    function buildCTInputs(key, count, config) {
+      const container = document.getElementById('ct_container_' + key);
+      if (!container) return;
+      
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const div = document.createElement('div');
+        div.className = 'input-group';
+        div.innerHTML = `
+          <label>CT-${i}</label>
+          <input type="number" id="${key}_ct${i}" class="small-input placeholder-gray" min="0" max="15" step="0.5" placeholder="-">
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    function buildSubjectBlock(key, config) {
+      const div = document.createElement('div');
+      div.className = 'subject-block';
+      div.id = 'block-' + key;
+
+      let html = `
+        <div class="subject-title">
+          <span>${config.label}</span>
+          <span class="tag">${config.type}</span>
+        </div>
+        <div style="margin-bottom:4px; font-weight:500; color:#1f4b66; font-size:0.9rem;">Enter marks</div>
+      `;
+
+      html += `<div class="ct-inputs" id="ct_container_${key}"></div>`;
+
+      html += `
+        <div class="input-row">
+          <div class="input-group">
+            <label>SBA</label>
+            <input type="number" id="${key}_sba" class="small-input placeholder-gray" min="0" max="10" step="0.5" placeholder="-">
+          </div>
+        </div>
+      `;
+
+      if (config.type === 'standard' || config.type === 'bangla2') {
+        html += `
+          <div class="input-row">
+            <div class="input-group">
+              <label>MCQ</label>
+              <input type="number" id="${key}_mcq" class="small-input placeholder-gray" min="0" max="${config.mcq.max || config.mcq.rawMax}" step="0.5" placeholder="-">
+            </div>
+            <div class="input-group">
+              <label>CQ</label>
+              <input type="number" id="${key}_cq" class="small-input placeholder-gray" min="0" max="${config.cq.rawMax}" step="0.5" placeholder="-">
+            </div>
+          </div>
+        `;
+      } else if (config.type === 'eng1' || config.type === 'eng2_arts') {
+        html += `
+          <div class="input-row">
+            <div class="input-group">
+              <label>CQ</label>
+              <input type="number" id="${key}_cq" class="small-input placeholder-gray" min="0" max="${config.cq.rawMax}" step="0.5" placeholder="-">
+            </div>
+          </div>
+        `;
+      } else if (config.type === 'ict') {
+        html += `
+          <div class="input-row">
+            <div class="input-group">
+              <label>MCQ</label>
+              <input type="number" id="${key}_mcq" class="small-input placeholder-gray" min="0" max="15" step="0.5" placeholder="-">
+            </div>
+            <div class="input-group">
+              <label>CQ</label>
+              <input type="number" id="${key}_cq" class="small-input placeholder-gray" min="0" max="25" step="0.5" placeholder="-">
+            </div>
+            <div class="input-group">
+              <label>Practical</label>
+              <input type="number" id="${key}_prac" class="small-input placeholder-gray" min="0" max="10" step="0.5" placeholder="-">
+            </div>
+          </div>
+        `;
+      }
+
+      html += `<table class="result-table" id="table_${key}"><thead><tr><th style="text-align:left;padding-left:14px;">Component</th><th>Gained</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+
+      html += `<tr><td class="section-label">CA</td><td class="score-cell" id="${key}_caGained">-</td><td>${config.ca.caMax}</td><td id="${key}_caStatus"></td></tr>`;
+
+      if (config.mcq) {
+        const mcqTotal = config.mcq.convertedMax || config.mcq.max;
+        html += `<tr><td class="section-label">MCQ</td><td class="score-cell" id="${key}_mcqGained">-</td><td>${mcqTotal}</td><td id="${key}_mcqStatus"></td></tr>`;
+      }
+
+      html += `<tr><td class="section-label">CQ</td><td class="score-cell" id="${key}_cqGained">-</td><td>${config.cq.convertedMax}</td><td id="${key}_cqStatus"></td></tr>`;
+
+      if (config.prac) {
+        html += `<tr><td class="section-label">Practical</td><td class="score-cell" id="${key}_pracGained">-</td><td>${config.prac.max}</td><td id="${key}_pracStatus"></td></tr>`;
+      }
+
+      html += `<tr class="total-row"><td style="text-align:left;padding-left:14px;font-weight:700;">Total</td><td class="score-cell" id="${key}_totalGained">-</td><td>${config.totalMax}</td><td id="${key}_totalStatus"></td></tr>`;
+
+      html += `</tbody></table>`;
+
+      html += `<div style="margin-top:14px;background:#eef4fa;border-radius:10px;padding:10px 14px;font-size:0.75rem;color:#1d425b;width:100%;">`;
+      html += `<strong>Pass rules:</strong> each part ≥40% &nbsp;|&nbsp; `;
+      html += `CA ≥ ${config.ca.pass}`;
+      if (config.mcq) html += ` &nbsp;|&nbsp; MCQ ≥ ${config.mcq.pass || config.mcq.convertedMax * 0.4}`;
+      html += ` &nbsp;|&nbsp; CQ ≥ ${config.cq.pass}`;
+      if (config.prac) html += ` &nbsp;|&nbsp; Practical ≥ ${config.prac.pass}`;
+      html += `</div>`;
+
+      div.innerHTML = html;
+      return div;
+    }
+
+    // ----- update functions -----
+    function getCTValues(key, count) {
+      const values = [];
+      for (let i = 1; i <= count; i++) {
+        const el = document.getElementById(key + '_ct' + i);
+        if (el) {
+          const val = parseFloat(el.value);
+          values.push(isNaN(val) ? null : clamp(val, 0, 15));
+        } else {
+          values.push(null);
+        }
+      }
+      return values;
+    }
+
+    function updateStandard(key, config) {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      const ctValues = getCTValues(key, ctCount);
+      const sba = parseFloat(document.getElementById(key + '_sba').value);
+      const mcq = parseFloat(document.getElementById(key + '_mcq').value);
+      const cqRaw = parseFloat(document.getElementById(key + '_cq').value);
+
+      const hasPending = checkPending(...ctValues) || checkPending(sba, mcq, cqRaw);
+      
+      let ca = 0, caPass = false;
+      let mcqGained = 0, mcqPass = false;
+      let cqConverted = 0, cqPass = false;
+      let total = 0, overallPass = false;
+
+      if (!hasPending) {
+        const validCTs = ctValues.filter(v => v !== null);
+        const avgCT = validCTs.reduce((a, b) => a + b, 0) / validCTs.length;
+        const avgTo10 = (avgCT * 10) / 15;
+        ca = round2(avgTo10 + clamp(sba, 0, 10));
+        caPass = ca >= config.ca.pass;
+
+        mcqGained = round2(clamp(mcq, 0, config.mcq.max));
+        mcqPass = mcqGained >= config.mcq.pass;
+
+        cqConverted = round2((clamp(cqRaw, 0, config.cq.rawMax) / config.cq.rawMax) * config.cq.convertedMax);
+        cqPass = cqConverted >= config.cq.pass;
+
+        total = round2(ca + mcqGained + cqConverted);
+        overallPass = caPass && mcqPass && cqPass;
+      }
+
+      document.getElementById(key + '_caGained').textContent = hasPending ? '-' : ca.toFixed(1);
+      document.getElementById(key + '_mcqGained').textContent = hasPending ? '-' : mcqGained.toFixed(1);
+      document.getElementById(key + '_cqGained').textContent = hasPending ? '-' : cqConverted.toFixed(1);
+      document.getElementById(key + '_totalGained').textContent = hasPending ? '-' : total.toFixed(1);
+
+      document.getElementById(key + '_caStatus').innerHTML = '';
+      document.getElementById(key + '_caStatus').appendChild(makeStatusEl(caPass, hasPending));
+      document.getElementById(key + '_mcqStatus').innerHTML = '';
+      document.getElementById(key + '_mcqStatus').appendChild(makeStatusEl(mcqPass, hasPending));
+      document.getElementById(key + '_cqStatus').innerHTML = '';
+      document.getElementById(key + '_cqStatus').appendChild(makeStatusEl(cqPass, hasPending));
+      document.getElementById(key + '_totalStatus').innerHTML = '';
+      document.getElementById(key + '_totalStatus').appendChild(makeStatusEl(overallPass, hasPending));
+    }
+
+    function updateEng1(key, config) {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      const ctValues = getCTValues(key, ctCount);
+      const sba = parseFloat(document.getElementById(key + '_sba').value);
+      const cqRaw = parseFloat(document.getElementById(key + '_cq').value);
+
+      const hasPending = checkPending(...ctValues) || checkPending(sba, cqRaw);
+      
+      let ca = 0, caPass = false;
+      let cqConverted = 0, cqPass = false;
+      let total = 0, overallPass = false;
+
+      if (!hasPending) {
+        const validCTs = ctValues.filter(v => v !== null);
+        const avgCT = validCTs.reduce((a, b) => a + b, 0) / validCTs.length;
+        const avgTo10 = (avgCT * 10) / 15;
+        ca = round2(avgTo10 + clamp(sba, 0, 10));
+        caPass = ca >= config.ca.pass;
+
+        cqConverted = round2((clamp(cqRaw, 0, config.cq.rawMax) / config.cq.rawMax) * config.cq.convertedMax);
+        cqPass = cqConverted >= config.cq.pass;
+
+        total = round2(ca + cqConverted);
+        overallPass = caPass && cqPass;
+      }
+
+      document.getElementById(key + '_caGained').textContent = hasPending ? '-' : ca.toFixed(1);
+      document.getElementById(key + '_cqGained').textContent = hasPending ? '-' : cqConverted.toFixed(1);
+      document.getElementById(key + '_totalGained').textContent = hasPending ? '-' : total.toFixed(1);
+
+      document.getElementById(key + '_caStatus').innerHTML = '';
+      document.getElementById(key + '_caStatus').appendChild(makeStatusEl(caPass, hasPending));
+      document.getElementById(key + '_cqStatus').innerHTML = '';
+      document.getElementById(key + '_cqStatus').appendChild(makeStatusEl(cqPass, hasPending));
+      document.getElementById(key + '_totalStatus').innerHTML = '';
+      document.getElementById(key + '_totalStatus').appendChild(makeStatusEl(overallPass, hasPending));
+    }
+
+    function updateEng2Arts(key, config) {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      const ctValues = getCTValues(key, ctCount);
+      const sba = parseFloat(document.getElementById(key + '_sba').value);
+      const cqRaw = parseFloat(document.getElementById(key + '_cq').value);
+
+      const hasPending = checkPending(...ctValues) || checkPending(sba, cqRaw);
+      
+      let ca = 0, caPass = false;
+      let cqConverted = 0, cqPass = false;
+      let total = 0, overallPass = false;
+
+      if (!hasPending) {
+        const validCTs = ctValues.filter(v => v !== null);
+        const avgCT = validCTs.reduce((a, b) => a + b, 0) / validCTs.length;
+        const avgTo10 = (avgCT * 10) / 15;
+        const caRaw = round2(avgTo10 + clamp(sba, 0, 10));
+        ca = round2((caRaw / 20) * 15);
+        caPass = ca >= config.ca.pass;
+
+        cqConverted = round2((clamp(cqRaw, 0, config.cq.rawMax) / config.cq.rawMax) * config.cq.convertedMax);
+        cqPass = cqConverted >= config.cq.pass;
+
+        total = round2(ca + cqConverted);
+        overallPass = caPass && cqPass;
+      }
+
+      document.getElementById(key + '_caGained').textContent = hasPending ? '-' : ca.toFixed(1);
+      document.getElementById(key + '_cqGained').textContent = hasPending ? '-' : cqConverted.toFixed(1);
+      document.getElementById(key + '_totalGained').textContent = hasPending ? '-' : total.toFixed(1);
+
+      document.getElementById(key + '_caStatus').innerHTML = '';
+      document.getElementById(key + '_caStatus').appendChild(makeStatusEl(caPass, hasPending));
+      document.getElementById(key + '_cqStatus').innerHTML = '';
+      document.getElementById(key + '_cqStatus').appendChild(makeStatusEl(cqPass, hasPending));
+      document.getElementById(key + '_totalStatus').innerHTML = '';
+      document.getElementById(key + '_totalStatus').appendChild(makeStatusEl(overallPass, hasPending));
+    }
+
+    function updateBangla2(key, config) {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      const ctValues = getCTValues(key, ctCount);
+      const sba = parseFloat(document.getElementById(key + '_sba').value);
+      const mcq = parseFloat(document.getElementById(key + '_mcq').value);
+      const cqRaw = parseFloat(document.getElementById(key + '_cq').value);
+
+      const hasPending = checkPending(...ctValues) || checkPending(sba, mcq, cqRaw);
+      
+      let ca = 0, caPass = false;
+      let mcqGained = 0, mcqPass = false;
+      let cqConverted = 0, cqPass = false;
+      let total = 0, overallPass = false;
+
+      if (!hasPending) {
+        const validCTs = ctValues.filter(v => v !== null);
+        const avgCT = validCTs.reduce((a, b) => a + b, 0) / validCTs.length;
+        const avgTo10 = (avgCT * 10) / 15;
+        const caRaw = round2(avgTo10 + clamp(sba, 0, 10));
+        ca = round2((caRaw / 20) * 15);
+        caPass = ca >= config.ca.pass;
+
+        mcqGained = round2(clamp(mcq, 0, config.mcq.max));
+        mcqPass = mcqGained >= config.mcq.pass;
+
+        cqConverted = round2((clamp(cqRaw, 0, config.cq.rawMax) / config.cq.rawMax) * config.cq.convertedMax);
+        cqPass = cqConverted >= config.cq.pass;
+
+        total = round2(ca + mcqGained + cqConverted);
+        overallPass = caPass && mcqPass && cqPass;
+      }
+
+      document.getElementById(key + '_caGained').textContent = hasPending ? '-' : ca.toFixed(1);
+      document.getElementById(key + '_mcqGained').textContent = hasPending ? '-' : mcqGained.toFixed(1);
+      document.getElementById(key + '_cqGained').textContent = hasPending ? '-' : cqConverted.toFixed(1);
+      document.getElementById(key + '_totalGained').textContent = hasPending ? '-' : total.toFixed(1);
+
+      document.getElementById(key + '_caStatus').innerHTML = '';
+      document.getElementById(key + '_caStatus').appendChild(makeStatusEl(caPass, hasPending));
+      document.getElementById(key + '_mcqStatus').innerHTML = '';
+      document.getElementById(key + '_mcqStatus').appendChild(makeStatusEl(mcqPass, hasPending));
+      document.getElementById(key + '_cqStatus').innerHTML = '';
+      document.getElementById(key + '_cqStatus').appendChild(makeStatusEl(cqPass, hasPending));
+      document.getElementById(key + '_totalStatus').innerHTML = '';
+      document.getElementById(key + '_totalStatus').appendChild(makeStatusEl(overallPass, hasPending));
+    }
+
+    function updateICT(key, config) {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      const ctValues = getCTValues(key, ctCount);
+      const sba = parseFloat(document.getElementById(key + '_sba').value);
+      const mcq = parseFloat(document.getElementById(key + '_mcq').value);
+      const cqRaw = parseFloat(document.getElementById(key + '_cq').value);
+      const prac = parseFloat(document.getElementById(key + '_prac').value);
+
+      const hasPending = checkPending(...ctValues) || checkPending(sba, mcq, cqRaw, prac);
+      
+      let ca = 0, caPass = false;
+      let mcqConverted = 0, mcqPass = false;
+      let cqConverted = 0, cqPass = false;
+      let pracGained = 0, pracPass = false;
+      let total = 0, overallPass = false;
+
+      if (!hasPending) {
+        const validCTs = ctValues.filter(v => v !== null);
+        const avgCT = validCTs.reduce((a, b) => a + b, 0) / validCTs.length;
+        const avgTo10 = (avgCT * 10) / 15;
+        const caRaw = round2(avgTo10 + clamp(sba, 0, 10));
+        ca = round2((caRaw / 20) * 15);
+        caPass = ca >= config.ca.pass;
+
+        mcqConverted = round2((clamp(mcq, 0, config.mcq.rawMax) / config.mcq.rawMax) * config.mcq.convertedMax);
+        mcqPass = mcqConverted >= config.mcq.pass;
+
+        cqConverted = round2((clamp(cqRaw, 0, config.cq.rawMax) / config.cq.rawMax) * config.cq.convertedMax);
+        cqPass = cqConverted >= config.cq.pass;
+
+        pracGained = round2(clamp(prac, 0, config.prac.max));
+        pracPass = pracGained >= config.prac.pass;
+
+        total = round2(ca + mcqConverted + cqConverted + pracGained);
+        overallPass = caPass && mcqPass && cqPass && pracPass;
+      }
+
+      document.getElementById(key + '_caGained').textContent = hasPending ? '-' : ca.toFixed(1);
+      document.getElementById(key + '_mcqGained').textContent = hasPending ? '-' : mcqConverted.toFixed(1);
+      document.getElementById(key + '_cqGained').textContent = hasPending ? '-' : cqConverted.toFixed(1);
+      document.getElementById(key + '_pracGained').textContent = hasPending ? '-' : pracGained.toFixed(1);
+      document.getElementById(key + '_totalGained').textContent = hasPending ? '-' : total.toFixed(1);
+
+      document.getElementById(key + '_caStatus').innerHTML = '';
+      document.getElementById(key + '_caStatus').appendChild(makeStatusEl(caPass, hasPending));
+      document.getElementById(key + '_mcqStatus').innerHTML = '';
+      document.getElementById(key + '_mcqStatus').appendChild(makeStatusEl(mcqPass, hasPending));
+      document.getElementById(key + '_cqStatus').innerHTML = '';
+      document.getElementById(key + '_cqStatus').appendChild(makeStatusEl(cqPass, hasPending));
+      document.getElementById(key + '_pracStatus').innerHTML = '';
+      document.getElementById(key + '_pracStatus').appendChild(makeStatusEl(pracPass, hasPending));
+      document.getElementById(key + '_totalStatus').innerHTML = '';
+      document.getElementById(key + '_totalStatus').appendChild(makeStatusEl(overallPass, hasPending));
+    }
+
+    // ----- rebuild CT inputs for all blocks -----
+    function rebuildCTInputs() {
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      Object.keys(subjectConfigs).forEach(key => {
+        const config = subjectConfigs[key];
+        buildCTInputs(key, ctCount, config);
+        const block = document.getElementById('block-' + key);
+        if (block) {
+          const inputs = block.querySelectorAll('input');
+          inputs.forEach(inp => {
+            inp.removeEventListener('input', updateFunctions[key]);
+            inp.removeEventListener('change', updateFunctions[key]);
+            inp.addEventListener('input', updateFunctions[key]);
+            inp.addEventListener('change', updateFunctions[key]);
+          });
+        }
+        if (document.getElementById('block-' + key).classList.contains('active')) {
+          if (updateFunctions[key]) updateFunctions[key]();
+        }
+      });
+    }
+
+    // ----- build all blocks -----
+    Object.keys(subjectConfigs).forEach(key => {
+      const config = subjectConfigs[key];
+      const block = buildSubjectBlock(key, config);
+      container.appendChild(block);
+
+      const ctCount = parseInt(ctCountSelect.value) || 2;
+      buildCTInputs(key, ctCount, config);
+
+      if (config.type === 'standard') {
+        updateFunctions[key] = () => updateStandard(key, config);
+      } else if (config.type === 'eng1') {
+        updateFunctions[key] = () => updateEng1(key, config);
+      } else if (config.type === 'eng2_arts') {
+        updateFunctions[key] = () => updateEng2Arts(key, config);
+      } else if (config.type === 'bangla2') {
+        updateFunctions[key] = () => updateBangla2(key, config);
+      } else if (config.type === 'ict') {
+        updateFunctions[key] = () => updateICT(key, config);
+      }
+
+      const inputs = block.querySelectorAll('input');
+      inputs.forEach(inp => {
+        inp.addEventListener('input', updateFunctions[key]);
+        inp.addEventListener('change', updateFunctions[key]);
+      });
+
+      blocks[key] = { block, update: updateFunctions[key] };
+    });
+
+    // ----- subject selection -----
+    let currentSubject = 'bangla1';
+
+    function showSubject(key) {
+      Object.keys(blocks).forEach(k => {
+        blocks[k].block.classList.toggle('active', k === key);
+      });
+      currentSubject = key;
+      if (updateFunctions[key]) {
+        updateFunctions[key]();
+      }
+    }
+
+    subjectSelect.addEventListener('change', function() {
+      showSubject(this.value);
+    });
+
+    ctCountSelect.addEventListener('change', function() {
+      rebuildCTInputs();
+      showSubject(currentSubject);
+    });
+
+    // Block negative integers on all number inputs
+    document.addEventListener('input', function(e) {
+      if (e.target.type === 'number') {
+        const val = parseFloat(e.target.value);
+        if (val < 0) {
+          e.target.value = '';
+        }
+      }
+    });
+
+    // Initial show
+    showSubject('bangla1');
+  })();
+</script>
+</body>
+</html>
